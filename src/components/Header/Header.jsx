@@ -32,7 +32,7 @@ export const Header = ({
     // 📡 Busca os dados de histórico do backend
     useEffect(() => {
         const fetchHistory = () => {
-            fetch("http://localhost:8000/api/history")
+            fetch("https://schedulerautomates-backend.onrender.com/api/history")
                 .then((res) => res.json())
                 .then((data) => {
                     if (Array.isArray(data)) {

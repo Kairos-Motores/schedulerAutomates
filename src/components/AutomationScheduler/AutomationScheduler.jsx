@@ -11,7 +11,7 @@ import { SettingsModal } from '../SettingsModal/SettingsModal';
 import { RepositoryView } from '../RepositoryView/RepositoryView';
 
 // 📌 API rodando localmente na porta 8000
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = 'https://schedulerautomates-backend.onrender.com';
 
 const DAYS_LIST = [
   { label: 'Dom', key: 'sun' },
@@ -85,7 +85,7 @@ export const AutomationScheduler = () => {
       })
       .catch(err => {
         // Log discreto caso o servidor local esteja offline
-        console.warn('Aguardando conexão com o backend local (http://localhost:8000)...');
+        console.warn('Aguardando conexão com o backend local (https://schedulerautomates-backend.onrender.com)...');
       });
   }, []);
 
