@@ -1,0 +1,520 @@
+/* =========================================================================
+ * ARQUIVO: AutomationScheduler.module.scss
+ * DESCRIÇÃO: Layout principal unificado + Dark Mode via Variáveis
+ * ========================================================================= */
+
+.appContainer {
+  /* Variáveis Padrão (Modo Claro) */
+  --bg-primary: #D9E2EC;
+  --bg-sidebar: #ffffff;
+  --bg-card: #ffffff;
+  --text-primary: #1c1c1c;
+  --text-muted: #666666;
+  --border-color: #e5e5e5;
+  --card-hover: #0067b8;
+
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+
+  /* 🌙 MÁGICA DO DARK MODE */
+  &.darkMode {
+    --bg-primary: #121212;
+    --bg-sidebar: #181818;
+    --bg-card: #1e1e1e;
+    --text-primary: #f5f5f5;
+    --text-muted: #a0a0a0;
+    --border-color: #333333;
+    --card-hover: #4cc2ff;
+  }
+}
+
+/* Div que une Sidebar + Área do Conteúdo */
+.mainLayout {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  height: calc(100vh - 60px);
+  /* Desconta o Header */
+  overflow: hidden;
+}
+
+/* SIDEBAR ESQUERDA */
+.sidebar {
+  width: 240px;
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px 0;
+  flex-shrink: 0;
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .navItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-left: 4px solid transparent;
+    color: var(--text-primary);
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    &.active {
+      background-color: rgba(0, 0, 0, 0.05);
+      border-left-color: #0067b8;
+      font-weight: 600;
+    }
+  }
+
+  .sidebarBottom {
+    border-top: 1px solid var(--border-color);
+    padding-top: 8px;
+  }
+}
+
+/* ÁREA DE CONTEÚDO (ONDE FICAM OS CARDS) */
+.contentArea {
+  flex: 1;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-y: auto;
+}
+
+.cardsGrid {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+/* CARD DE AUTOMAÇÃO (ALARME) */
+.alarmCard {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+  width: 320px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+
+  &:hover {
+    border-color: var(--card-hover);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .timeDisplay {
+    font-size: 3.5rem;
+    font-weight: 300;
+    line-height: 1;
+    color: var(--text-primary);
+  }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 22px;
+
+    input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.3s;
+      border-radius: 22px;
+
+      &:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.3s;
+        border-radius: 50%;
+      }
+    }
+
+    input:checked+.slider {
+      background-color: #0067b8;
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(22px);
+    }
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .alarmTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 12px 0 16px 0;
+    color: var(--text-primary);
+  }
+
+  .daysContainer {
+    display: flex;
+    gap: 6px;
+
+    .dayBadge {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      background-color: rgba(0, 0, 0, 0.08);
+      color: var(--text-muted);
+
+      &.activeDay {
+        background-color: #0067b8;
+        color: #ffffff;
+      }
+    }
+  }
+}
+
+/* BOTÃO FLUTUANTE (FAB) */
+.fabGroup {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  gap: 10px;
+
+  button {
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+}
+
+/* PAINEL DE EDIÇÃO / MODAL */
+.editPanelOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 40px;
+  z-index: 100;
+}
+
+.editPanel {
+  width: 340px;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+
+  .panelHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+
+    .deleteIcon {
+      color: #d13438;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+  }
+
+  /* Seletor Digital Catraca */
+  .timePickerWheel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background-color: rgba(0, 0, 0, 0.03);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    user-select: none;
+
+    .separator {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+  }
+
+  .fieldGroup {
+    margin-bottom: 16px;
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+      color: var(--text-muted);
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-sidebar);
+      color: var(--text-primary);
+      border-radius: 4px;
+      outline: none;
+      font-size: 0.9rem;
+
+      &:focus {
+        border-color: #0067b8;
+      }
+    }
+  }
+
+  .repeatDays {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+
+    .dayCircle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: none;
+      background-color: rgba(0, 0, 0, 0.08);
+      color: var(--text-primary);
+      font-size: 0.8rem;
+      cursor: pointer;
+
+      &.selected {
+        background-color: #0067b8;
+        color: #ffffff;
+      }
+    }
+  }
+
+  .panelActions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+
+    button {
+      flex: 1;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .btnSave {
+      background-color: #0067b8;
+      color: white;
+      border: none;
+
+      &:hover {
+        background-color: #005a9e;
+      }
+    }
+
+    .btnCancel {
+      background-color: var(--bg-card);
+      color: var(--text-primary);
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+    }
+  }
+}
+
+/* COMPONENTE TIME WHEEL (CATRACA) */
+.wheelContainer {
+  position: relative;
+  height: 120px;
+  width: 70px;
+  overflow: hidden;
+
+  .wheelHighlight {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    right: 0;
+    height: 40px;
+    border-top: 2px solid #0067b8;
+    border-bottom: 2px solid #0067b8;
+    background-color: rgba(0, 103, 184, 0.08);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .wheelList {
+    height: 100%;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .wheelSpacer {
+    height: 40px;
+    flex-shrink: 0;
+  }
+
+  .wheelItem {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    transition: all 0.15s ease;
+
+    &.wheelItemSelected {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #0067b8;
+    }
+  }
+}
+
+/* Estilos do Repositório 6.1 */
+.repositoryGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.repoCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: var(--bg-card-subtle, #f4f6f8);
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+
+  .repoInfo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .repoIcon {
+      font-size: 1.4rem;
+    }
+
+    .repoPath {
+      font-family: monospace;
+      font-size: 0.95rem;
+      color: #2c3e50;
+    }
+
+    .repoMeta {
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 2px;
+    }
+  }
+
+  .usePathBtn {
+    padding: 6px 14px;
+    background-color: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+
+    &:hover {
+      background-color: #1d4ed8;
+    }
+  }
+}
+
+/* Forçar texto preto no Repositório 6.2 */
+.blackTextRepository {
+  color: #000000 !important;
+
+  h3,
+  h4,
+  p,
+  span,
+  label,
+  div,
+  textarea {
+    color: #000000 !important;
+  }
+
+  .codeTextarea {
+    color: #000000 !important;
+    background-color: #ffffff !important;
+    border: 1px solid #ccc;
+  }
+}

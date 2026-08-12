@@ -1,0 +1,237 @@
+/* ⚙️ SettingsModal.module.scss */
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modalContent {
+    background-color: var(--bg-card, #1e293b);
+    border: 1px solid var(--border-color, #334155);
+    border-radius: 12px;
+    padding: 24px;
+    width: 620px;
+    max-width: 90%;
+    color: var(--text-primary, #f8fafc);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h3 {
+        margin: 0;
+        font-size: 1.2rem;
+    }
+}
+
+.closeBtn {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.2rem;
+    cursor: pointer;
+
+    &:hover {
+        color: #fff;
+    }
+}
+
+.subtitle {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-top: 6px;
+    margin-bottom: 20px;
+
+    code {
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 2px 6px;
+        border-radius: 4px;
+        color: #60a5fa;
+    }
+}
+
+.addForm {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color, #334155);
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+
+    label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #94a3b8;
+    }
+
+    input {
+        background-color: #0f172a;
+        border: 1px solid #334155;
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+
+        &:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+    }
+}
+
+.addBtn {
+    background-color: #3b82f6;
+    color: #fff;
+    border: none;
+    padding: 9px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:hover {
+        background-color: #2563eb;
+    }
+}
+
+.divider {
+    border: 0;
+    border-top: 1px solid var(--border-color, #334155);
+    margin: 20px 0;
+}
+
+.folderList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 250px;
+    overflow-y: auto;
+
+    h4 {
+        margin: 0 0 6px 0;
+        font-size: 0.9rem;
+        color: #94a3b8;
+    }
+}
+
+.emptyText {
+    font-size: 0.85rem;
+    color: #64748b;
+    font-style: italic;
+}
+
+.folderCard {
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color, #334155);
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.folderInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.folderPath {
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: #4ade80;
+    font-weight: 600;
+}
+
+.folderDetails {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    display: flex;
+    gap: 16px;
+
+    b {
+        color: #f8fafc;
+    }
+}
+
+.cardActions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.useBtn {
+    background-color: #22c55e;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #16a34a;
+    }
+}
+
+.deleteBtn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 4px;
+
+    &:hover {
+        opacity: 0.8;
+    }
+
+}
+
+.modalContent {
+    /* ☀️ MODO CLARO */
+    --bg-modal: #ffffff;
+    --text-primary: #1e293b;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --input-bg: #f8fafc;
+
+    background-color: var(--bg-modal);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 12px;
+    padding: 24px;
+    width: 620px;
+    max-width: 90%;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+
+    /* 🌙 MODO ESCURO */
+    &.darkMode {
+        --bg-modal: #1e293b;
+        --text-primary: #f8fafc;
+        --text-muted: #94a3b8;
+        --border-color: #334155;
+        --input-bg: #0f172a;
+    }
+}

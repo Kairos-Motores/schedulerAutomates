@@ -1,0 +1,187 @@
+/* 📁 RepositoryView.module.scss */
+
+.container {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    /* ☀️ TEMAS */
+    --bg-card: #ffffff;
+    --text-primary: #1e293b;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --input-bg: #ffffff;
+    --card-hover: #3b82f6;
+
+    color: var(--text-primary);
+
+    &.darkMode {
+        --bg-card: #1e293b;
+        --text-primary: #f8fafc;
+        --text-muted: #94a3b8;
+        --border-color: #334155;
+        --input-bg: #0f172a;
+        --card-hover: #60a5fa;
+
+        color: var(--text-primary);
+    }
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: var(--text-primary);
+    }
+}
+
+.subtitle {
+    margin: 4px 0 0 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+
+    code {
+        background-color: rgba(59, 130, 246, 0.1);
+        color: #3b82f6;
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+}
+
+.searchWrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    padding: 6px 12px;
+    border-radius: 8px;
+
+    input {
+        background: transparent;
+        border: none;
+        color: var(--text-primary);
+        outline: none;
+        font-size: 0.85rem;
+        width: 220px;
+
+        &::placeholder {
+            color: var(--text-muted);
+        }
+    }
+}
+
+.emptyState {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-muted);
+    background-color: var(--bg-card);
+    border-radius: 8px;
+    border: 1px dashed var(--border-color);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.scriptCard {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: all 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        border-color: var(--card-hover);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.badgeExt {
+    background-color: #3b82f6;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.folderTag {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.scriptName {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--text-primary);
+}
+
+.fullPath {
+    font-family: monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    word-break: break-all;
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 6px;
+    border-radius: 4px;
+}
+
+.cardActions {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.createTaskBtn {
+    flex: 1;
+    background-color: #22c55e;
+    color: #fff;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #16a34a;
+    }
+}
+
+.copyBtn {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--border-color);
+    }
+}

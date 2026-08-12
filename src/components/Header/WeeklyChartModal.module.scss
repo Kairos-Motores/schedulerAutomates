@@ -1,0 +1,107 @@
+/* 📊 WeeklyChartModal.module.scss */
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modalContent {
+    background-color: var(--bg-card, #1e293b);
+    border: 1px solid var(--border-color, #334155);
+    border-radius: 12px;
+    padding: 24px;
+    width: 500px;
+    max-width: 90%;
+    color: var(--text-primary, #f8fafc);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h3 {
+        margin: 0;
+        font-size: 1.2rem;
+    }
+}
+
+.subtitle {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-top: 6px;
+    margin-bottom: 24px;
+}
+
+.closeBtn {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.2rem;
+    cursor: pointer;
+
+    &:hover {
+        color: #fff;
+    }
+}
+
+/* 📊 HISTOGRAMA */
+.chartContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 200px;
+    padding: 10px 10px 0 10px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    border-bottom: 2px solid #3b82f6;
+}
+
+.barGroup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 40px;
+}
+
+.barValue {
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #60a5fa;
+    margin-bottom: 4px;
+}
+
+.barTrack {
+    flex: 1;
+    width: 24px;
+    display: flex;
+    align-items: flex-end;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.barFill {
+    width: 100%;
+    background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
+    border-radius: 4px 4px 0 0;
+    transition: height 0.4s ease-in-out;
+}
+
+.barLabel {
+    margin-top: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #94a3b8;
+}
