@@ -10,6 +10,9 @@ import { HistoryView } from '../HistoryView/HistoryView';
 import { SettingsModal } from '../SettingsModal/SettingsModal';
 import { RepositoryView } from '../RepositoryView/RepositoryView';
 
+// 📌 API rodando localmente na porta 8000
+const API_BASE_URL = 'http://localhost:8000';
+
 const DAYS_LIST = [
   { label: 'Dom', key: 'sun' },
   { label: 'Seg', key: 'mon' },
@@ -68,8 +71,11 @@ export const AutomationScheduler = () => {
 
   // 1. Carregar e sincronizar tasks do backend
   const fetchTasks = useCallback(() => {
-    fetch('https://schedulerautomates-backend.onrender.com/api/tasks')
-      .then(res => res.json())
+    fetch(`${API_BASE_URL}/api/tasks`)
+      .then(res => {
+        if (!res.ok) throw new Error('Servidor indisponível');
+        return res.json();
+      })
       .then(data => {
         if (Array.isArray(data)) {
           setTasks(data);
@@ -77,12 +83,15 @@ export const AutomationScheduler = () => {
           setTasks([]);
         }
       })
-      .catch(err => console.error('Erro ao carregar do backend:', err));
+      .catch(err => {
+        // Log discreto caso o servidor local esteja offline
+        console.warn('Aguardando conexão com o backend local (http://localhost:8000)...');
+      });
   }, []);
 
   useEffect(() => {
     fetchTasks();
-    const interval = setInterval(fetchTasks, 3000); // Polling a cada 3s para sincronizar status com o servidor
+    const interval = setInterval(fetchTasks, 5000); // Polling ajustado para 5s
     return () => clearInterval(interval);
   }, [fetchTasks]);
 
@@ -108,7 +117,7 @@ export const AutomationScheduler = () => {
       // 🔄 Marca visualmente como 'processing' imediatamente no front
       setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: 'processing' } : t));
 
-      const response = await fetch('https://schedulerautomates-backend.onrender.com/api/tasks/run', {
+      const response = await fetch(`${API_BASE_URL}/api/tasks/run`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -192,7 +201,7 @@ export const AutomationScheduler = () => {
 
     if (updatedTask) {
       try {
-        await fetch('https://schedulerautomates-backend.onrender.com/api/tasks', {
+        await fetch(`${API_BASE_URL}/api/tasks`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updatedTask),
@@ -240,7 +249,7 @@ export const AutomationScheduler = () => {
     });
 
     try {
-      await fetch('https://schedulerautomates-backend.onrender.com/api/tasks', {
+      await fetch(`${API_BASE_URL}/api/tasks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(taskToSave),
@@ -260,7 +269,7 @@ export const AutomationScheduler = () => {
     setCurrentTask(null);
 
     try {
-      await fetch(`https://schedulerautomates-backend.onrender.com/api/tasks/${id}`, {
+      await fetch(`${API_BASE_URL}/api/tasks/${id}`, {
         method: 'DELETE',
       });
       fetchTasks();
