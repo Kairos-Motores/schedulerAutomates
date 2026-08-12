@@ -68,7 +68,7 @@ export const AutomationScheduler = () => {
 
   // 1. Carregar e sincronizar tasks do backend
   const fetchTasks = useCallback(() => {
-    fetch('http://localhost:8000/api/tasks')
+    fetch('https://schedulerautomates-backend.onrender.com/api/tasks')
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -108,7 +108,7 @@ export const AutomationScheduler = () => {
       // 🔄 Marca visualmente como 'processing' imediatamente no front
       setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: 'processing' } : t));
 
-      const response = await fetch('http://localhost:8000/api/tasks/run', {
+      const response = await fetch('https://schedulerautomates-backend.onrender.com/api/tasks/run', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -192,7 +192,7 @@ export const AutomationScheduler = () => {
 
     if (updatedTask) {
       try {
-        await fetch('http://localhost:8000/api/tasks', {
+        await fetch('https://schedulerautomates-backend.onrender.com/api/tasks', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updatedTask),
@@ -240,7 +240,7 @@ export const AutomationScheduler = () => {
     });
 
     try {
-      await fetch('http://localhost:8000/api/tasks', {
+      await fetch('https://schedulerautomates-backend.onrender.com/api/tasks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(taskToSave),
@@ -260,7 +260,7 @@ export const AutomationScheduler = () => {
     setCurrentTask(null);
 
     try {
-      await fetch(`http://localhost:8000/api/tasks/${id}`, {
+      await fetch(`https://schedulerautomates-backend.onrender.com/api/tasks/${id}`, {
         method: 'DELETE',
       });
       fetchTasks();
