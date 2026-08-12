@@ -141,7 +141,10 @@ const PACKAGE_MAP = {
     'docx': 'python-docx'
 };
 
-// 🤖 AUTO-INSTALL: Lê o arquivo .py e instala o que estiver faltando na VENV antes de rodar
+// ⚡ CACHE EM MEMÓRIA: Evita re-verificar pacotes já validados na sessão atual do servidor
+const installedPackagesCache = new Set();
+
+// 🤖 AUTO-INSTALL INTELIGENTE: Só instala o que REALMENTE estiver faltando na VENV
 function autoInstallImports(scriptPath, pythonExe) {
     try {
         const content = fs.readFileSync(scriptPath, 'utf-8');
@@ -152,8 +155,7 @@ function autoInstallImports(scriptPath, pythonExe) {
         while ((match = importRegex.exec(content)) !== null) {
             const fullMod = match[1];
             const baseMod = fullMod.split('.')[0];
-            detectedModules.add(fullMod);
-            detectedModules.add(baseMod);
+            detectedModules.add(baseMod); // Foca no módulo principal
         }
 
         const cleanPythonExe = pythonExe.replace(/"/g, '');
@@ -162,30 +164,43 @@ function autoInstallImports(scriptPath, pythonExe) {
         const nativeModules = [
             'os', 'sys', 'json', 're', 'math', 'datetime', 'time',
             'pathlib', 'subprocess', 'urllib', 'shutil', 'typing',
-            'io', 'csv', 'collections', 'random', 'base64', 'hashlib'
+            'io', 'csv', 'collections', 'random', 'base64', 'hashlib', 'codecs'
         ];
+
+        // 1️⃣ Pega a lista de pacotes instalados na VENV de uma só vez
+        let installedInVenv = '';
+        try {
+            installedInVenv = execSync(`"${pipExe}" list`, { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'] }).toLowerCase();
+        } catch (e) {
+            installedInVenv = '';
+        }
 
         detectedModules.forEach(mod => {
             if (nativeModules.includes(mod)) return;
 
             const packageName = PACKAGE_MAP[mod] || mod;
+            const cacheKey = `${cleanPythonExe}_${packageName}`;
 
+            // 2️⃣ Se já foi validado nesta sessão, ignora!
+            if (installedPackagesCache.has(cacheKey)) return;
+
+            // 3️⃣ Se o 'pip list' mostra que já está instalado, salva no cache e ignora!
+            if (installedInVenv.includes(packageName.toLowerCase())) {
+                installedPackagesCache.add(cacheKey);
+                return;
+            }
+
+            // 4️⃣ Só executa a instalação se realmente NÃO constar no pip list:
+            console.log(`📦 [Auto-Install] Módulo '${mod}' não encontrado na VENV. Instalando '${packageName}'...`);
             try {
-                execSync(`"${cleanPythonExe}" -c "import ${mod}"`, {
-                    stdio: 'ignore',
+                execSync(`"${pipExe}" install ${packageName}`, {
+                    stdio: 'inherit',
                     env: { ...process.env, PYTHONIOENCODING: 'utf-8' }
                 });
-            } catch (err) {
-                console.log(`📦 [Auto-Install] Módulo '${mod}' não encontrado. Instalando pacote '${packageName}'...`);
-                try {
-                    execSync(`"${pipExe}" install ${packageName}`, {
-                        stdio: 'inherit',
-                        env: { ...process.env, PYTHONIOENCODING: 'utf-8' }
-                    });
-                    console.log(`✅ [Auto-Install] Pacote '${packageName}' instalado com sucesso!`);
-                } catch (installErr) {
-                    console.error(`❌ [Auto-Install] Falha ao instalar '${packageName}':`, installErr.message);
-                }
+                installedPackagesCache.add(cacheKey);
+                console.log(`✅ [Auto-Install] Pacote '${packageName}' instalado com sucesso!`);
+            } catch (installErr) {
+                console.error(`❌ [Auto-Install] Falha ao instalar '${packageName}':`, installErr.message);
             }
         });
     } catch (e) {
@@ -294,7 +309,7 @@ app.delete('/api/history', (req, res) => {
     }
 });
 
-// ⚡ POST: Executar automação com Suporte Completo a UTF-8 (Emojis)
+// ⚡ POST: Executar automação
 app.post('/api/tasks/run', (req, res) => {
     const { scriptPath, taskId, taskTitle } = req.body;
 
@@ -348,12 +363,15 @@ app.post('/api/tasks/run', (req, res) => {
         console.log(`▶ Executando EXECUTÁVEL/BATCH: ${fullScriptPath}`);
     } else {
         const pythonExe = ensureVenvEnvironment(scriptDir);
+
+        // Check rápido e inteligente de bibliotecas faltantes
         autoInstallImports(fullScriptPath, pythonExe);
+
         command = `${pythonExe} "${fullScriptPath}"`;
         console.log(`▶ Executando PYTHON: ${fullScriptPath} usando [${pythonExe}]`);
     }
 
-    // 🌐 Executa o script com UTF-8 forçado no Python para aceitar emojis e caracteres especiais
+    // Executa com suporte completo a UTF-8 (Emojis)
     exec(command, {
         cwd: scriptDir,
         env: { ...process.env, PYTHONIOENCODING: 'utf-8' }

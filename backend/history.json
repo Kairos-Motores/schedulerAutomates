@@ -1,5 +1,15 @@
 [
   {
+    "id": "1786537364925",
+    "timestamp": "2026-08-12T12:22:44.925Z",
+    "taskId": "1786532771273",
+    "title": "get-columns-2",
+    "fileName": "get-columns-2.py",
+    "scriptPath": "C:\\Automacoes\\column\\get-columns-2.py",
+    "status": "success",
+    "output": "🔍 Analisando RECNO no Dataverse...\r\n📋 Maiores RECNOS encontrados: [18266, 18265, 18264, 18263, 18262]\r\n✅ Retomando a partir do RECNO > 18266\r\n🔌 Conectando ao Protheus...\r\n📊 0 novos registros encontrados.\r\n✅ Tudo sincronizado.\r\n"
+  },
+  {
     "id": "1786535985490",
     "timestamp": "2026-08-12T11:59:45.490Z",
     "taskId": "1786460462865",
