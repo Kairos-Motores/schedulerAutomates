@@ -10,7 +10,7 @@ import { HistoryView } from '../HistoryView/HistoryView';
 import { SettingsModal } from '../SettingsModal/SettingsModal';
 import { RepositoryView } from '../RepositoryView/RepositoryView';
 
-// 📌 API rodando localmente na porta 8000
+// 📌 API rodando localmente na porta 8000 via Ngrok
 const API_BASE_URL = 'https://eggshell-jaybird-hate.ngrok-free.dev';
 
 const DAYS_LIST = [
@@ -69,11 +69,11 @@ export const AutomationScheduler = () => {
     loadSavedFolders();
   }, [isSettingsOpen, loadSavedFolders]);
 
-  // 1. Carregar e sincronizar tasks do backend
+  // 1. Carregar e sincronizar tasks do backend (com filtro de segurança contra objetos vazios)
   const fetchTasks = useCallback(() => {
     fetch(`${API_BASE_URL}/api/tasks`, {
       headers: {
-        'ngrok-skip-browser-warning': 'true' // 👈 Adicionado para liberar no Ngrok
+        'ngrok-skip-browser-warning': 'true'
       }
     })
       .then(res => {
@@ -82,13 +82,14 @@ export const AutomationScheduler = () => {
       })
       .then(data => {
         if (Array.isArray(data)) {
-          setTasks(data);
+          // 🛡️ Filtra registros nulos ou incompletos diretamente do backend
+          const validTasks = data.filter(t => t && typeof t === 'object' && (t.title || t.scriptPath) && t.time);
+          setTasks(validTasks);
         } else {
           setTasks([]);
         }
       })
       .catch(err => {
-        // Log discreto caso o servidor local esteja offline
         console.warn('Aguardando conexão com o backend local...');
       });
   }, []);
@@ -125,7 +126,7 @@ export const AutomationScheduler = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true' // 👈 Adicionado para liberar no Ngrok
+          'ngrok-skip-browser-warning': 'true'
         },
         body: JSON.stringify({
           taskId: task.id,
@@ -212,7 +213,7 @@ export const AutomationScheduler = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'true' // 👈 Adicionado para liberar no Ngrok
+            'ngrok-skip-browser-warning': 'true'
           },
           body: JSON.stringify(updatedTask),
         });
@@ -263,7 +264,7 @@ export const AutomationScheduler = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true' // 👈 Adicionado para liberar no Ngrok
+          'ngrok-skip-browser-warning': 'true'
         },
         body: JSON.stringify(taskToSave),
       });
@@ -285,7 +286,7 @@ export const AutomationScheduler = () => {
       await fetch(`${API_BASE_URL}/api/tasks/${id}`, {
         method: 'DELETE',
         headers: {
-          'ngrok-skip-browser-warning': 'true' // 👈 Adicionado para liberar no Ngrok
+          'ngrok-skip-browser-warning': 'true'
         }
       });
       fetchTasks();
@@ -377,64 +378,67 @@ export const AutomationScheduler = () => {
           {activeMenu === 'Automacoes' && (
             <>
               <div className={styles.cardsGrid}>
-                {tasks.map(task => (
-                  <div key={task.id} className={styles.alarmCard} onClick={() => handleOpenEdit(task)}>
-                    <div className={styles.cardHeader}>
-                      <span className={styles.timeDisplay}>{task.time}</span>
+                {/* 🛡️ Filtro de segurança para evitar cartões fantasmas sem título/horário */}
+                {tasks
+                  .filter(task => task && (task.title || task.scriptPath) && task.time)
+                  .map(task => (
+                    <div key={task.id || Math.random()} className={styles.alarmCard} onClick={() => handleOpenEdit(task)}>
+                      <div className={styles.cardHeader}>
+                        <span className={styles.timeDisplay}>{task.time}</span>
 
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <button
-                          className={styles.runBtn}
-                          title="Executar Agora"
-                          onClick={(e) => handleRunTask(task, e)}
-                          disabled={task.status === 'processing'}
-                          style={{
-                            background: task.status === 'processing' ? '#eab308' : '#22c55e',
-                            color: '#fff',
-                            border: 'none',
-                            borderRadius: '4px',
-                            padding: '4px 8px',
-                            cursor: task.status === 'processing' ? 'not-allowed' : 'pointer',
-                            fontWeight: 'bold',
-                            fontSize: '12px'
-                          }}
-                        >
-                          {task.status === 'processing' ? '⏳ Rodando...' : '▶ Rodar'}
-                        </button>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <button
+                            className={styles.runBtn}
+                            title="Executar Agora"
+                            onClick={(e) => handleRunTask(task, e)}
+                            disabled={task.status === 'processing'}
+                            style={{
+                              background: task.status === 'processing' ? '#eab308' : '#22c55e',
+                              color: '#fff',
+                              border: 'none',
+                              borderRadius: '4px',
+                              padding: '4px 8px',
+                              cursor: task.status === 'processing' ? 'not-allowed' : 'pointer',
+                              fontWeight: 'bold',
+                              fontSize: '12px'
+                            }}
+                          >
+                            {task.status === 'processing' ? '⏳ Rodando...' : '▶ Rodar'}
+                          </button>
 
-                        <label className={styles.switch} onClick={e => e.stopPropagation()}>
-                          <input
-                            type="checkbox"
-                            checked={task.enabled}
-                            onChange={(e) => toggleTask(task.id, e)}
-                          />
-                          <span className={styles.slider}></span>
-                        </label>
+                          <label className={styles.switch} onClick={e => e.stopPropagation()}>
+                            <input
+                              type="checkbox"
+                              checked={!!task.enabled}
+                              onChange={(e) => toggleTask(task.id, e)}
+                            />
+                            <span className={styles.slider}></span>
+                          </label>
+                        </div>
+                      </div>
+
+                      <div className={styles.subtitle}>
+                        {task.status === 'processing'
+                          ? '⏳ Em Processamento...'
+                          : task.enabled
+                            ? '🟢 Agendado'
+                            : '⚪ Em espera'}
+                      </div>
+
+                      <div className={styles.alarmTitle}>{task.title || getFileNameWithoutExtension(task.scriptPath)}</div>
+
+                      <div className={styles.daysContainer}>
+                        {DAYS_LIST.map(d => (
+                          <div
+                            key={d.key}
+                            className={`${styles.dayBadge} ${task.days && task.days.includes(d.key) ? styles.activeDay : ''}`}
+                          >
+                            {d.label}
+                          </div>
+                        ))}
                       </div>
                     </div>
-
-                    <div className={styles.subtitle}>
-                      {task.status === 'processing'
-                        ? '⏳ Em Processamento...'
-                        : task.enabled
-                          ? '🟢 Agendado'
-                          : '⚪ Em espera'}
-                    </div>
-
-                    <div className={styles.alarmTitle}>{task.title}</div>
-
-                    <div className={styles.daysContainer}>
-                      {DAYS_LIST.map(d => (
-                        <div
-                          key={d.key}
-                          className={`${styles.dayBadge} ${task.days && task.days.includes(d.key) ? styles.activeDay : ''}`}
-                        >
-                          {d.label}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+                  ))}
               </div>
 
               <div className={styles.fabGroup}>

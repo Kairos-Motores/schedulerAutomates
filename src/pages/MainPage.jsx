@@ -1,5 +1,5 @@
 import { Header } from "../components/Header/Header";
-import { AutomationScheduler } from "../components/AutomationScheduler/AutomationScheduler.jsx"; // (Apenas 1 ponto)
+import { AutomationScheduler } from "../components/AutomationScheduler/AutomationScheduler.jsx";
 import styled from "./style.module.scss";
 
 export const MainPage = () => {
