@@ -13,6 +13,9 @@ const AlertCircleIcon = () => <span style={{ color: "#ef4444" }}>🚫</span>;
 const CheckCircleIcon = () => <span style={{ color: "#22c55e" }}>✅</span>;
 const ClockIcon = () => <span style={{ color: "#eab308" }}>⏳</span>;
 
+// 📌 URL da API backend via Ngrok
+const API_BASE_URL = 'https://eggshell-jaybird-hate.ngrok-free.dev';
+
 export const Header = ({
     automations = [],
     darkMode = false,
@@ -29,25 +32,34 @@ export const Header = ({
         }
     }, [darkMode]);
 
-    // 📡 Busca os dados de histórico do backend
+    // 📡 Busca os dados de histórico do backend com validação reforçada
     useEffect(() => {
         const fetchHistory = () => {
-            fetch("https://eggshell-jaybird-hate.ngrok-free.dev/api/history", {
+            fetch(`${API_BASE_URL}/api/history`, {
                 headers: {
-                    "ngrok-skip-browser-warning": "true"
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true' // 👈 Garante a liberação no Ngrok
                 }
             })
-                .then((res) => res.json())
+                .then((res) => {
+                    if (!res.ok) {
+                        throw new Error(`Erro na requisição: status ${res.status}`);
+                    }
+                    return res.json();
+                })
                 .then((data) => {
                     if (Array.isArray(data)) {
                         setHistoryLogs(data);
                     }
                 })
-                .catch((err) => console.error("Erro ao carregar histórico no Header:", err));
+                .catch((err) => {
+                    // Log limpo em caso de indisponibilidade momentânea do backend
+                    console.warn("Aguardando conexão com o histórico do servidor local...");
+                });
         };
 
         fetchHistory();
-        const interval = setInterval(fetchHistory, 2000);
+        const interval = setInterval(fetchHistory, 5000); // Polling otimizado para 5s
         return () => clearInterval(interval);
     }, []);
 
