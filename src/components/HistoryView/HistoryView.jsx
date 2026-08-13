@@ -8,7 +8,7 @@ export const HistoryView = ({ darkMode }) => {
     const [searchTerm, setSearchTerm] = useState(''); // 🔍 Termo de busca
 
     const fetchHistory = () => {
-        fetch('https://schedulerautomates-backend.onrender.com/api/history')
+        fetch('https://eggshell-jaybird-hate.ngrok-free.dev/api/history')
             .then(res => res.json())
             .then(data => setHistory(data))
             .catch(err => console.error('Erro ao carregar histórico:', err));
@@ -22,7 +22,7 @@ export const HistoryView = ({ darkMode }) => {
 
     const handleClearHistory = async () => {
         if (window.confirm('Tem certeza que deseja apagar todo o histórico?')) {
-            await fetch('https://schedulerautomates-backend.onrender.com/api/history', { method: 'DELETE' });
+            await fetch('https://eggshell-jaybird-hate.ngrok-free.dev/api/history', { method: 'DELETE' });
             setHistory([]);
         }
     };
