@@ -71,7 +71,11 @@ export const AutomationScheduler = () => {
 
   // 1. Carregar e sincronizar tasks do backend
   const fetchTasks = useCallback(() => {
-    fetch(`${API_BASE_URL}/api/tasks`)
+    fetch(`${API_BASE_URL}/api/tasks`, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true' // 👈 Adicionado para liberar no Ngrok
+      }
+    })
       .then(res => {
         if (!res.ok) throw new Error('Servidor indisponível');
         return res.json();
@@ -85,7 +89,7 @@ export const AutomationScheduler = () => {
       })
       .catch(err => {
         // Log discreto caso o servidor local esteja offline
-        console.warn('Aguardando conexão com o backend local (https://schedulerautomates-backend.onrender.com)...');
+        console.warn('Aguardando conexão com o backend local...');
       });
   }, []);
 
@@ -119,7 +123,10 @@ export const AutomationScheduler = () => {
 
       const response = await fetch(`${API_BASE_URL}/api/tasks/run`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true' // 👈 Adicionado para liberar no Ngrok
+        },
         body: JSON.stringify({
           taskId: task.id,
           taskTitle: task.title,
@@ -203,7 +210,10 @@ export const AutomationScheduler = () => {
       try {
         await fetch(`${API_BASE_URL}/api/tasks`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true' // 👈 Adicionado para liberar no Ngrok
+          },
           body: JSON.stringify(updatedTask),
         });
       } catch (err) {
@@ -251,7 +261,10 @@ export const AutomationScheduler = () => {
     try {
       await fetch(`${API_BASE_URL}/api/tasks`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true' // 👈 Adicionado para liberar no Ngrok
+        },
         body: JSON.stringify(taskToSave),
       });
       fetchTasks();
@@ -271,6 +284,9 @@ export const AutomationScheduler = () => {
     try {
       await fetch(`${API_BASE_URL}/api/tasks/${id}`, {
         method: 'DELETE',
+        headers: {
+          'ngrok-skip-browser-warning': 'true' // 👈 Adicionado para liberar no Ngrok
+        }
       });
       fetchTasks();
     } catch (err) {
