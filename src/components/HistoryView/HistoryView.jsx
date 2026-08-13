@@ -8,7 +8,11 @@ export const HistoryView = ({ darkMode }) => {
     const [searchTerm, setSearchTerm] = useState(''); // 🔍 Termo de busca
 
     const fetchHistory = () => {
-        fetch('https://eggshell-jaybird-hate.ngrok-free.dev/api/history')
+        fetch("https://eggshell-jaybird-hate.ngrok-free.dev/api/history", {
+            headers: {
+                "ngrok-skip-browser-warning": "true"
+            }
+        })
             .then(res => res.json())
             .then(data => setHistory(data))
             .catch(err => console.error('Erro ao carregar histórico:', err));
@@ -20,9 +24,15 @@ export const HistoryView = ({ darkMode }) => {
         return () => clearInterval(interval);
     }, []);
 
+    // ✅ Agora o DELETE envia o cabeçalho do Ngrok!
     const handleClearHistory = async () => {
         if (window.confirm('Tem certeza que deseja apagar todo o histórico?')) {
-            await fetch('https://eggshell-jaybird-hate.ngrok-free.dev/api/history', { method: 'DELETE' });
+            await fetch('https://eggshell-jaybird-hate.ngrok-free.dev/api/history', {
+                method: 'DELETE',
+                headers: {
+                    "ngrok-skip-browser-warning": "true"
+                }
+            });
             setHistory([]);
         }
     };

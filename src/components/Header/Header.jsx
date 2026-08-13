@@ -32,7 +32,11 @@ export const Header = ({
     // 📡 Busca os dados de histórico do backend
     useEffect(() => {
         const fetchHistory = () => {
-            fetch("https://eggshell-jaybird-hate.ngrok-free.dev/api/history")
+            fetch("https://eggshell-jaybird-hate.ngrok-free.dev/api/history", {
+                headers: {
+                    "ngrok-skip-browser-warning": "true"
+                }
+            })
                 .then((res) => res.json())
                 .then((data) => {
                     if (Array.isArray(data)) {
