@@ -29,7 +29,7 @@ export const WeeklyChartModal = ({ isOpen, onClose }) => {
         if (!isOpen) return;
 
         // Busca o histórico do backend para montar o histograma real da semana
-        fetch('https://schedulerautomates-backend.onrender.com/api/history')
+        fetch('https://eggshell-jaybird-hate.ngrok-free.dev/api/history')
             .then(res => res.json())
             .then(data => {
                 if (!Array.isArray(data)) return;

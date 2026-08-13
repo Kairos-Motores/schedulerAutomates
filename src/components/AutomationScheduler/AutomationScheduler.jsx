@@ -11,7 +11,7 @@ import { SettingsModal } from '../SettingsModal/SettingsModal';
 import { RepositoryView } from '../RepositoryView/RepositoryView';
 
 // 📌 API rodando localmente na porta 8000
-const API_BASE_URL = 'https://schedulerautomates-backend.onrender.com';
+const API_BASE_URL = 'https://eggshell-jaybird-hate.ngrok-free.dev';
 
 const DAYS_LIST = [
   { label: 'Dom', key: 'sun' },
